@@ -22,21 +22,22 @@
     <md-button class="md-raised md-primary" ng-click="vm.toggleLight()">Toggle light</md-button>
     <md-button class="md-raised md-primary" ng-click="vm.switchColor()">Toggle light</md-button>
 
-</div>
 
-<!--<md-button class="md-raised md-primary" onclick="oauth2_login()">LOG IN</md-button>-->
-<!--<button id="authorize-button" style="visibility: hidden">Authorize</button>-->
-<div class="content">
-    <h1>Oauth2</h1>
-    <p><div class="button" onclick="oauth2_login()">Oauth2 Login</div></p>
-    <div id="logs"></div>
-</div>
+    <div class="content">
+        <h1>Oauth2</h1>
+        <!--<p><div class="button" ng-click="vm.login()">Oauth2 Login</div></p>-->
+        <md-button class="md-raised md-primary" ng-click="vm.login()">Oauth2 Login</md-button>
+        <!--<div class="button" ng-click="vm.login()">Oauth2 Login</div>-->
+        <div id="logs"></div>
+    </div>
 
     <h1>Apache Cordova</h1>
     <div id="deviceready">
         <p class="event listening">Connecting to Device</p>
         <p class="event received">Device is Ready</p>
     </div>
+
+</div>
 
 <!--CORDOVA-->
 <script type="text/javascript" src="cordova.js"></script>
@@ -51,65 +52,7 @@
 <!--<script src="https://apis.google.com/js/client.js"></script>
 
 <!--SCRIPT AUTH-->
-<script>
-
-    //script src="https://apis.google.com/js/client.js?onload=OnLoadCallback"
-    // template for new oauth2 service
-    function oauth2_login() {
-        $.oauth2({
-            auth_url: 'https://accounts.google.com/o/oauth2/auth',           // required
-            response_type: 'code',      // required - "code"/"token"
-            token_url: 'https://accounts.google.com/o/oauth2/token',          // required if response_type = 'code'
-            logout_url: 'https://accounts.google.com/logout',         // recommended if available
-            client_id: '435124131375-571j8bianm4e2rlp5ib5qicj3p54l0hm.apps.googleusercontent.com',          // required
-            client_secret: 'ozILwWwXLpmNsgB1yCBiqgPU',      // required if response_type = 'code'
-            redirect_uri: 'http://localhost/oauth2callback',       // required - some dummy url
-            other_params: {
-                'scope': 'https://www.googleapis.com/auth/calendar'
-            }        // optional params object for scope, state, display...
-        }, on_success, function(error, response){
-
-            // do something with error object
-            $("#logs").append("<p class='error'><b>error: </b>"+JSON.stringify(error)+"</p>");
-            $("#logs").append("<p class='error'><b>response: </b>"+JSON.stringify(response)+"</p>");
-        });
-
-    }
-    function on_success(token, response){
-        // do something with token or response
-        //var authorizeButton = document.getElementById('authorize-button');
-        //authorizeButton.style.visibility = '';
-        $.get('https://www.googleapis.com/calendar/v3/calendars/testfornith@gmail.com/events?'+'access_token='+token, ev_handler);
-
-        function ev_handler(data){
-
-            var number_of_current_events=0;
-            var today = new Date();
-            for(var i=0;i<data.items.length;i++){
-
-                var eventStartDate = new Date(data.items[i].start.dateTime);
-                var eventEndDate = new Date(data.items[i].end.dateTime);
-
-
-                if (+today >= +eventStartDate.valueOf() && +today <= +eventEndDate.valueOf()) {
-
-                    $("#logs").append("<p class='success'><b>All the events with token: </b>"+JSON.stringify(data.items[i].summary)+"</p>");
-                    number_of_current_events+=1;
-                }
-            }
-            if (number_of_current_events==0){
-                $("#logs").append("<p class='success'><b>All the events with token: </b>"+JSON.stringify('No current events')+"</p>");
-            }
-        }
-
-
-
-        //console
-        //$("#logs").append("<p class='success'><b>access_token: </b>"+token+"</p>");
-        //$("#logs").append("<p class='success'><b>response: </b>"+JSON.stringify(response)+"</p>");
-    }
-
-</script>
+<!--<script></script>-->
 <!--SCRIPT AUTH END-->
 <!--FRAMEWORKS-->
 <script src="js/angular/angular.js"></script>
