@@ -13,8 +13,8 @@ function MainController() {
     activate();
 
     console.log('Start working with HUE');
-    var hue = jsHue(),
-        user = null;
+    var hue = jsHue();
+    var user = null;
 
     hue.discover(
         function(bridges) {
@@ -25,10 +25,6 @@ function MainController() {
                 bridges.forEach(function(b) {
                     console.log('b is ', b);
                     console.log('Bridge found at IP address %s.', b.internalipaddress);
-                    user = getUser(bridges);
-                    console.log('User is: ', user);
-                    onLightsReady();
-
                 });
             }
         },
@@ -37,40 +33,7 @@ function MainController() {
         }
     );
 
-    function getUser(bridges) {
-        var user = null;
-
-        bridges.forEach(function (bridge) {
-            user = hue.bridge(bridge.internalipaddress).user('newdeveloper');
-            return false;
-        });
-
-        return user;
-    }
-
-    function onLightsReady() {
-        user.setLightState(2, {
-            hue: 56470,
-            sat: 255,
-            bri: 102,
-            on: false
-        });
-        user.setLightState(3, {
-            hue: 56470,
-            sat: 255,
-            bri: 102,
-            on: false
-        });
-        user.setLightState(1, {
-            hue: 56470,
-            sat: 255,
-            bri: 102,
-            on: false
-        });
-
-    }
-
-    /*var user = hue.bridge('192.168.1.160').user('foo');
+    /*var user = hue.bridge('192.168.1.160').user('testingnithapplica');
     console.log('user ', user);*/
 
 
@@ -78,7 +41,7 @@ function MainController() {
 
 
 
-    /*vm.getLights = user.getLights(getLightsSuccess, getLightsFailure);
+  /*  vm.getLights = user.getLights(getLightsSuccess, getLightsFailure);
 
     function getLightsSuccess(data) {
         console.log('Getting lights ', data)
@@ -87,16 +50,30 @@ function MainController() {
     function getLightsFailure(err) {
         console.log('ERROR getting lights ', err)
     }
+*/
+
+    vm.createUser = createUser;
+    vm.getConfig = getConfig;
+    vm.getLuces = getLuces;
+    vm.toggleLight = toggleLight;
+    vm.switchColor = switchColor;
 
 
-    vm.createUser = createUser;*/
+
+    /*VARIABLES*/
+    vm.toggle = false;
+    /*Google calendar*/
+    vm.busy = false;
 
 
     /////FUNCTIONS
-/*
+
     function createUser() {
+        user = hue.bridge('192.168.1.160').user('testingnithapplicanith');
+        console.log('user ', user);
         // create user account (requires link button to be pressed)
-        user.create('foo application', successUser, errorUser);
+        user.create('testingnithapplicanith12', successUser, errorUser);
+        return user;
 
         function successUser(data) {
             console.log('data ', data);
@@ -108,15 +85,52 @@ function MainController() {
         }
     }
 
-    function setLight() {
-        console.log('Setting light');
+    function getConfig() {
+        console.log('Getting config...');
+        vm.config = user.getConfig(onSuccess, onFailure);
+        console.log('vn.config ', vm.config);
+
+        function onSuccess(response) {
+            console.log('response from config: ', response)
+        }
+
+        function onFailure(error) {
+            console.log('ERROR CONFIG: ', error)
+        }
     }
 
-    function getLights() {
+    function getLuces() {
         console.log('Getting lights');
-    }*/
+        vm.lights = user.getLights(onSuccess, onFailure);
+        console.log('vm.lights: ', vm.lights);
 
+        function onSuccess(response) {
+            console.log('response from lights: ', response)
+        }
 
+        function onFailure(error) {
+            console.log('ERROR LIGHTS: ', error)
+        }
+
+    }
+
+    function toggleLight() {
+        vm.toggle = !vm.toggle;
+        console.log('Toggleling lights');
+        user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*GREEN LIGHT*/
+        user.setLightState(3, { on: vm.toggle, xy: [ 0.6736, 0.3221] }); /*RED LIGHT*/
+    }
+
+    function switchColor() {
+        vm.busy = !vm.busy;
+        console.log('Switching colors');
+        if (vm.busy) {
+            user.setLightState(3, { on: vm.toggle, xy: [ 0.6736, 0.3221] }); /*RED LIGHT*/
+        }
+        else {
+            user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*GREEN LIGHT*/
+        }
+    }
 
 
 
