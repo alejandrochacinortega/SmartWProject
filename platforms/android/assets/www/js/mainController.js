@@ -10,6 +10,27 @@ function MainController() {
     vm.activate = activate;
     vm.title = 'MainController';
 
+    vm.setLight = setLight;
+    vm.getLight = getLight;
+
+
+    /////FUNCTIONS
+
+    function setLight() {
+        console.log('Setting light');
+    }
+
+    function getLight() {
+        console.log('Getting light');
+    }
+
+
+
+
+
+    /////FUNCTIONS
+
+
     activate();
 
     ////////////////
@@ -37,9 +58,19 @@ function MainController() {
 
 
         var user = hue.bridge('192.168.1.160').user('nith');
+        console.log('user ', user)
 
         // create user account (requires link button to be pressed)
-        user.create('nith application');
+        user.create('nith application', successUser, errorUser);
+
+        function successUser(data) {
+            console.log('data ', data)
+            console.log('user has been created ');
+        }
+
+        function errorUser(error) {
+            console.log('Error creating the user: ', error);
+        }
     }
 
 

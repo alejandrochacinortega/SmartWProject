@@ -4,7 +4,7 @@ Please file issues and pull requests against that repo.
 
 ## Installing Angular Material
 
-You can install this package locally either with `npm`, `bower`, or `jspm`.
+You can install this package locally either with `npm` or with `bower`.
 
 ### npm
 
@@ -12,7 +12,11 @@ You can install this package locally either with `npm`, `bower`, or `jspm`.
 npm install angular-material
 ```
 
-Now you can use `require('angular-material')` when installing with npm or jsmp and using Browserify or Webpack.
+Note that this package is not in CommonJS format, so doing `require('angular-material')`
+will return `undefined`. If you're using 
+[Browserify](https://github.com/substack/node-browserify), you can use
+[exposify](https://github.com/thlorenz/exposify) to have `require('angular-material')`
+return the `angular-material` global.
 
 ### bower
 
