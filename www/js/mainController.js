@@ -142,11 +142,11 @@ function MainController($scope, $mdToast) {
         console.log('Weather check every 20 sec');
 
         checkWeather();
-        if (vm.weathercond != null) {
+        /*if (vm.weathercond != null) {
             $mdToast.show({
                 template: '<md-toast><span flex>' + 'every 20 sec' +'</span></md-toast>'
             });
-        }
+        }*/
 
 
     }, 20000);
