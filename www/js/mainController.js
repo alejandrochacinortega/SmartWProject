@@ -12,7 +12,25 @@ function MainController() {
     vm.token = null;
     vm.number_of_current_events = 0;
 
-    activate();
+
+    /*VARIABLES*/
+    vm.toggle = true;
+    /*Google calendar*/
+    vm.busy = false;
+    var hue = jsHue();
+    var user = null;
+
+    activate(hue);
+
+
+    /*FUNCTIONS*/
+
+    vm.createUser = createUser;
+    vm.getConfig = getConfig;
+    vm.getLuces = getLuces;
+    vm.toggleLight = toggleLight;
+    vm.switchColor = switchColor;
+
 
     //////////////////////////////////////// GOOGLE ////////////////////////////////////////
 
@@ -51,7 +69,6 @@ function MainController() {
         $.get('https://www.googleapis.com/calendar/v3/calendars/testfornith@gmail.com/events?' + 'access_token=' + token, ev_handler);
 
         function ev_handler(data) {
-
             busyChecker(data);
         }
 
@@ -65,19 +82,15 @@ function MainController() {
             vm.number_of_current_events = 0;
             var eventStartDate = new Date(data.items[i].start.dateTime);
             var eventEndDate = new Date(data.items[i].end.dateTime);
-
-
             if (+today >= +eventStartDate.valueOf() && +today <= +eventEndDate.valueOf()) {
-
-                $("#logs").append("<p class='success'><b>All the events with token: </b>" + JSON.stringify(data.items[i].summary) + "</p>");
+                /*$("#logs").append("<p class='success'><b>All the events with token: </b>" + JSON.stringify(data.items[i].summary) + "</p>");*/
                 vm.number_of_current_events += 1;
                 busyUser();
             }
         }
         if (vm.number_of_current_events == 0) {
-            $("#logs").append("<p class='success'><b>All the events with token: </b>" + JSON.stringify('No current events') + "</p>");
+            /*$("#logs").append("<p class='success'><b>All the events with token: </b>" + JSON.stringify('No current events') + "</p>");*/
             freeUser();
-
         }
 
         return vm.number_of_current_events;
@@ -109,49 +122,13 @@ function MainController() {
     ///////////////////////////////////////// HUE /////////////////////////////////////////
 
 
-
-    console.log('Start working with HUE');
-    var hue = jsHue();
-    var user = null;
-
-    hue.discover(
-        function(bridges) {
-            if(bridges.length === 0) {
-                console.log('No bridges found. :(');
-            }
-            else {
-                bridges.forEach(function(b) {
-                    console.log('b is ', b);
-                    console.log('Bridge found at IP address %s.', b.internalipaddress);
-                });
-            }
-        },
-        function(error) {
-            console.error(error.message);
-        }
-    );
-
-    vm.createUser = createUser;
-    vm.getConfig = getConfig;
-    vm.getLuces = getLuces;
-    vm.toggleLight = toggleLight;
-    vm.switchColor = switchColor;
-
-
-
-    /*VARIABLES*/
-    vm.toggle = true;
-    /*Google calendar*/
-    vm.busy = false;
-
-
     /////FUNCTIONS
 
     function createUser() {
-        user = hue.bridge('192.168.1.160').user('testingnithapplicanith');
-        console.log('user ', user);
+        user = hue.bridge('192.168.1.161').user('testingnithapplicanithhome');
+        /*console.log('user ', user);*/ /*UNCOMMENT*/
         // create user account (requires link button to be pressed)
-        user.create('testingnithapplicanith12', successUser, errorUser);
+        user.create('testingnithapplicanithhome12', successUser, errorUser);
         return user;
 
         function successUser(data) {
@@ -220,12 +197,34 @@ function MainController() {
         user.setLightState(3, { on: vm.toggle, xy: [ 0.6736, 0.3221] }); /*RED LIGHT*/
     }
 
-    /////FUNCTIONS
+    function defaultColorLight() {
+        console.log('Setting default color');
+        user.setLightState(3, { on: true, xy: [ 0.1684, 0.0416] }); /*BLUE LIGHT*/
+    }
 
-    ////////////////
+    function activate(hue) {
+        console.log('Start working with HUE');
 
-    function activate() {
+        hue.discover(
+            function(bridges) {
+                if(bridges.length === 0) {
+                    console.log('No bridges found. :(');
+                }
+                else {
+                    bridges.forEach(function(b) {
+                        console.log('b is ', b);
+                        console.log('Bridge found at IP address %s.', b.internalipaddress);
+                        createUser();
+                        defaultColorLight();
+                    });
+                }
+            },
+            function(error) {
+                console.error(error.message);
+            }
+        );
 
+        return hue;
     }
 
 
