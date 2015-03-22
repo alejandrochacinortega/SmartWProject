@@ -1,10 +1,10 @@
 angular
     .module('App')
-    .controller('MainController', MainController);
+    .controller('MainController', ['$scope', '$mdToast', MainController]);
 
 
 /* @ngInject */
-function MainController() {
+function MainController($scope, $mdToast) {
     /* jshint validthis: true */
     var vm = this;
     vm.activate = activate;
@@ -14,6 +14,7 @@ function MainController() {
 
 
     /*VARIABLES*/
+    vm.authRequired = true;
     vm.toggle = true;
     /*Google calendar*/
     vm.busy = false;
@@ -30,6 +31,13 @@ function MainController() {
     vm.getLuces = getLuces;
     vm.toggleLight = toggleLight;
     vm.switchColor = switchColor;
+
+    /*$scope.toastPosition = {
+        bottom: false,
+        top: true,
+        left: false,
+        right: true
+    };*/
 
 
     //////////////////////////////////////// GOOGLE ////////////////////////////////////////
@@ -59,9 +67,16 @@ function MainController() {
     }
 
     function on_success(token, response) {
+        console.log('SHOW TOAST!!');
+        vm.authRequired = false;
+        $mdToast.show({
+            /*template: '<md-toast class="md-warn">You have logged in :)</md-toast>',*/
+            template: '<md-toast><span flex>You have successfully logged in :)</span></md-toast>',
+            hideDelay: 2000
+        });
         checkToken(token);
         vm.token = token;
-    }
+    };
 
 
     function checkToken(token) {
