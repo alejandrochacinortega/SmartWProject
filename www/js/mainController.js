@@ -203,7 +203,7 @@ function MainController() {
     }
 
     function activate(hue) {
-        console.log('Start working with HUE');
+        console.log('Start working with HUE ');
 
         hue.discover(
             function(bridges) {
