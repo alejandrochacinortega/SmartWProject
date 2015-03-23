@@ -15,12 +15,15 @@ function MainController($scope, $mdToast, $state, $timeout) {
 
     /*VARIABLES*/
     vm.toggle = true;
+    vm.cityname = 'Oslo';
+    vm.checkWeather = checkWeather;
     /*Google calendar*/
     vm.busy = false;
     var hue = jsHue();
     var user = null;
-    var weatherAPIkey='bb40fccaf1b9a523505913790c4077d6';
-    var cityname = 'Oslo';
+    var weatherAPIkey = 'bb40fccaf1b9a523505913790c4077d6';
+    var cityname = "Oslo";
+
     vm.weathercond = null;
 
     activate(hue);
@@ -35,11 +38,11 @@ function MainController($scope, $mdToast, $state, $timeout) {
     vm.switchColor = switchColor;
 
     /*$scope.toastPosition = {
-        bottom: false,
-        top: true,
-        left: false,
-        right: true
-    };*/
+     bottom: false,
+     top: true,
+     left: false,
+     right: true
+     };*/
 
 
     //////////////////////////////////////// GOOGLE ////////////////////////////////////////
@@ -59,7 +62,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
             other_params: {
                 'scope': 'https://www.googleapis.com/auth/calendar'
             }        // optional params object for scope, state, display...
-        }, on_success, function(error, response){
+        }, on_success, function (error, response) {
 
             // do something with error object
             //$("#logs").append("<p class='error'><b>error: </b>"+JSON.stringify(error)+"</p>");
@@ -82,7 +85,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
 
 
     function checkToken(token) {
-        console.log('Token on success ', token );
+        console.log('Token on success ', token);
         $.get('https://www.googleapis.com/calendar/v3/calendars/testfornith@gmail.com/events?' + 'access_token=' + token, ev_handler);
 
         function ev_handler(data) {
@@ -112,8 +115,6 @@ function MainController($scope, $mdToast, $state, $timeout) {
     }
 
 
-
-
     vm.test = test;
 
     function test() {
@@ -121,44 +122,22 @@ function MainController($scope, $mdToast, $state, $timeout) {
     }
 
 
-    window.setInterval(function(){
+    window.setInterval(function () {
         /// call your function here
-<<<<<<< HEAD
-        /*console.log('Calling every 5 seg');*/
-=======
         console.log('Calling every 5 seg');
-        $mdToast.show({
-            template: '<md-toast><span flex>' + 'every 5 sec' + '</span></md-toast>'
-        });
->>>>>>> weatherfeature
         if (vm.token) {
             checkToken(vm.token);
         }
         else {
-<<<<<<< HEAD
-          /*  console.log('Waiting for token');*/
+            console.log('Waiting for token');
         }
     }, 3000);
-=======
-            console.log('Waiting for token');
-
-        }
-    }, 6000);
->>>>>>> weatherfeature
 
     window.setInterval(function(){
         /// call your function here
         console.log('Weather check every 20 sec');
-
         checkWeather();
-        /*if (vm.weathercond != null) {
-            $mdToast.show({
-                template: '<md-toast><span flex>' + 'every 20 sec' +'</span></md-toast>'
-            });
-        }*/
-
-
-    }, 20000);
+    }, 3000);
 
     ///////////////////////////////////////// HUE /////////////////////////////////////////
 
@@ -241,22 +220,28 @@ function MainController($scope, $mdToast, $state, $timeout) {
     function setWeatherColor(color) {
         switch(color) {
             case 'white' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.3333, 0.3333 ] }); /*WHITE LIGHT*/
+                user.setLightState(1, { on: vm.toggle, xy: [ 0.3333, 0.3333 ] }); /*WHITE LIGHT*/
+                console.log(color);
                 break;
             case 'yellow' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4281, 0.5254 ] }); /*YELLOW LIGHT*/
+                user.setLightState(1, { on: vm.toggle, xy: [ 0.5259, 0.4134 ] }); /*YELLOW LIGHT*/
+                console.log(color);
                 break;
             case 'red' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.700, 0.265 ] }); /*RED LIGHT*/
+                user.setLightState(1, { on: vm.toggle, xy: [ 0.700, 0.265 ] }); /*RED LIGHT*/
+                console.log(color);
                 break;
             case 'lightblue' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.2608, 0.3177 ] }); /*LIGHTBLUE LIGHT*/
+                user.setLightState(1, { on: vm.toggle, xy: [ 0.2193, 0.1426 ] }); /*LIGHTBLUE LIGHT*/
+                console.log(color);
                 break;
             case 'blue' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.1653, 0.2424 ] }); /*BLUE LIGHT*/
+                user.setLightState(1, { on: vm.toggle, xy: [ 0.1684, 0.0416] }); /*BLUE LIGHT*/
+                console.log(color);
                 break;
             case 'darkblue' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.1743, 0.1486 ] }); /*DARKBLUE LIGHT*/
+                user.setLightState(1, { on: vm.toggle, xy: [ 0.1684, 0.0416] }); /*DARKBLUE LIGHT*/
+                console.log(color);
                 break;
         }
 
@@ -293,12 +278,12 @@ function MainController($scope, $mdToast, $state, $timeout) {
         return hue;
     }
 
-    function checkWeather() {
-
-
+    function checkWeather(cityname) {
+        console.log('Checking weather of ', cityname);
         $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + cityname + '&type=accurate' + "&APPID=" + weatherAPIkey, answerHandler)
             .fail(onfail);
         function answerHandler(answer){
+            console.log('ANSWER ', answer);
             vm.weathercond = null;
             //console.log( (answer['main']['temp']-273.15).toFixed(2));
             $.each(answer, function(key, val){
@@ -307,10 +292,12 @@ function MainController($scope, $mdToast, $state, $timeout) {
                 }
             });
             if (vm.weathercond != null) {
+                console.log('WEATHERCOND ', vm.weathercond)
                 defineWeatherLight(vm.weathercond);
             }
             else {
                 console.log("Can't get weather condition code")
+                console.log('ANSWER ELSE', answer);
             }
 
         }
@@ -320,6 +307,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
     }
 
     function defineWeatherLight(condition) {
+
         var condcode = parseInt(condition);
         var color = null;
         if (condcode > 199 && condcode < 300) {
