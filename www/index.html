@@ -16,25 +16,14 @@
 </head>
 <body>
 
+
+<div ui-view></div>
+
 <div ng-controller="MainController as vm">
-    <div ng-show="vm.authRequired">
-        <md-button class="md-raised md-primary" ng-click="vm.login()">Log in</md-button>
-
-        <md-button class="md-fab md-primary">
-            <md-icon class="mdi mdi-calendar" style="font-size: 140%"></md-icon>
-        </md-button>
-    </div>
 
 
-    <div ng-show="!vm.authRequired">
-        <md-button class="md-raised md-primary" ng-click="vm.getLuces()">Get lights</md-button>
-        <md-button class="md-raised md-primary" ng-click="vm.setLight()">Set Lights</md-button>
-        <md-button class="md-raised md-primary" ng-click="vm.createUser()">Create user</md-button>
-        <md-button class="md-raised md-primary" ng-click="vm.getConfig()">Get config</md-button>
-        <md-button class="md-raised md-primary" ng-click="vm.toggleLight()">Toggle light</md-button>
-        <md-button class="md-raised md-primary" ng-click="vm.switchColor()">Switch Color</md-button>
-        <br/>
-    </div>
+
+
 
 </div>
 
@@ -55,6 +44,8 @@
 <!--SCRIPT AUTH END-->
 <!--FRAMEWORKS-->
 <script src="js/angular/angular.js"></script>
+<script src="js/angular-ui-router/release/angular-ui-router.js"></script>
+<script></script>
 <script src="js/angular-animate/angular-animate.js"></script>
 <script src="js/angular-aria/angular-aria.js"></script>
 <script src="js/angular-material/angular-material.js"></script>

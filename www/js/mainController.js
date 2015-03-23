@@ -1,10 +1,10 @@
 angular
     .module('App')
-    .controller('MainController', ['$scope', '$mdToast', MainController]);
+    .controller('MainController', ['$scope', '$mdToast', '$state', '$timeout', MainController]);
 
 
 /* @ngInject */
-function MainController($scope, $mdToast) {
+function MainController($scope, $mdToast, $state, $timeout) {
     /* jshint validthis: true */
     var vm = this;
     vm.activate = activate;
@@ -14,7 +14,6 @@ function MainController($scope, $mdToast) {
 
 
     /*VARIABLES*/
-    vm.authRequired = true;
     vm.toggle = true;
     /*Google calendar*/
     vm.busy = false;
@@ -67,8 +66,8 @@ function MainController($scope, $mdToast) {
     }
 
     function on_success(token, response) {
+        $state.go('main');
         console.log('SHOW TOAST!!');
-        vm.authRequired = false;
         $mdToast.show({
             /*template: '<md-toast class="md-warn">You have logged in :)</md-toast>',*/
             template: '<md-toast><span flex>You have successfully logged in :)</span></md-toast>',
@@ -123,14 +122,14 @@ function MainController($scope, $mdToast) {
 
     window.setInterval(function(){
         /// call your function here
-        console.log('Calling every 5 seg');
+        /*console.log('Calling every 5 seg');*/
         if (vm.token) {
             checkToken(vm.token);
         }
         else {
-            console.log('Waiting for token');
+          /*  console.log('Waiting for token');*/
         }
-    }, 5000);
+    }, 3000);
 
 
 
