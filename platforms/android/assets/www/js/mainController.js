@@ -139,7 +139,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
     /////FUNCTIONS
 
     function createUser() {
-        user = hue.bridge('192.168.1.161').user('testingnithapplicanithhome');
+        user = hue.bridge('192.168.1.160').user('testingnithapplicanithhome');
         /*console.log('user ', user);*/ /*UNCOMMENT*/
         // create user account (requires link button to be pressed)
         user.create('testingnithapplicanithhome12', successUser, errorUser);
