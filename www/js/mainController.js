@@ -232,22 +232,22 @@ function MainController($scope, $mdToast) {
     function setWeatherColor(color) {
         switch(color) {
             case 'white' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*WHITE LIGHT*/
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.3333, 0.3333 ] }); /*WHITE LIGHT*/
                 break;
             case 'yellow' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*YELLOW LIGHT*/
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4281, 0.5254 ] }); /*YELLOW LIGHT*/
                 break;
             case 'red' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*RED LIGHT*/
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.700, 0.265 ] }); /*RED LIGHT*/
                 break;
             case 'lightblue' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*LIGHTBLUE LIGHT*/
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.2608, 0.3177 ] }); /*LIGHTBLUE LIGHT*/
                 break;
             case 'blue' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*BLUE LIGHT*/
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.1653, 0.2424 ] }); /*BLUE LIGHT*/
                 break;
             case 'darkblue' :
-                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*DARKBLUE LIGHT*/
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.1743, 0.1486 ] }); /*DARKBLUE LIGHT*/
                 break;
         }
 
