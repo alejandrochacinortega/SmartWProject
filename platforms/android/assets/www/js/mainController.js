@@ -19,6 +19,9 @@ function MainController($scope, $mdToast, $state, $timeout) {
     vm.busy = false;
     var hue = jsHue();
     var user = null;
+    var weatherAPIkey='bb40fccaf1b9a523505913790c4077d6';
+    var cityname = 'Oslo';
+    vm.weathercond = null;
 
     activate(hue);
 
@@ -59,8 +62,8 @@ function MainController($scope, $mdToast, $state, $timeout) {
         }, on_success, function(error, response){
 
             // do something with error object
-            $("#logs").append("<p class='error'><b>error: </b>"+JSON.stringify(error)+"</p>");
-            $("#logs").append("<p class='error'><b>response: </b>"+JSON.stringify(response)+"</p>");
+            //$("#logs").append("<p class='error'><b>error: </b>"+JSON.stringify(error)+"</p>");
+            //$("#logs").append("<p class='error'><b>response: </b>"+JSON.stringify(response)+"</p>");
         });
 
     }
@@ -97,13 +100,11 @@ function MainController($scope, $mdToast, $state, $timeout) {
             var eventStartDate = new Date(data.items[i].start.dateTime);
             var eventEndDate = new Date(data.items[i].end.dateTime);
             if (+today >= +eventStartDate.valueOf() && +today <= +eventEndDate.valueOf()) {
-                /*$("#logs").append("<p class='success'><b>All the events with token: </b>" + JSON.stringify(data.items[i].summary) + "</p>");*/
                 vm.number_of_current_events += 1;
                 busyUser();
             }
         }
         if (vm.number_of_current_events == 0) {
-            /*$("#logs").append("<p class='success'><b>All the events with token: </b>" + JSON.stringify('No current events') + "</p>");*/
             freeUser();
         }
 
@@ -122,16 +123,27 @@ function MainController($scope, $mdToast, $state, $timeout) {
 
     window.setInterval(function(){
         /// call your function here
-        /*console.log('Calling every 5 seg');*/
+        console.log('Calling every 5 seg');
         if (vm.token) {
             checkToken(vm.token);
         }
         else {
-          /*  console.log('Waiting for token');*/
+            console.log('Waiting for token');
+
         }
-    }, 3000);
+    }, 6000);
+
+    window.setInterval(function(){
+        /// call your function here
+        console.log('Weather check every 20 sec');
+
+        checkWeather();
+        if (vm.weathercond != null) {
+            console.log('Weather check every 20 sec');
+        }
 
 
+    }, 20000);
 
     ///////////////////////////////////////// HUE /////////////////////////////////////////
 
@@ -211,9 +223,34 @@ function MainController($scope, $mdToast, $state, $timeout) {
         user.setLightState(3, { on: vm.toggle, xy: [ 0.6736, 0.3221] }); /*RED LIGHT*/
     }
 
+    function setWeatherColor(color) {
+        switch(color) {
+            case 'white' :
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*WHITE LIGHT*/
+                break;
+            case 'yellow' :
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*YELLOW LIGHT*/
+                break;
+            case 'red' :
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*RED LIGHT*/
+                break;
+            case 'lightblue' :
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*LIGHTBLUE LIGHT*/
+                break;
+            case 'blue' :
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*BLUE LIGHT*/
+                break;
+            case 'darkblue' :
+                user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*DARKBLUE LIGHT*/
+                break;
+        }
+
+    }
+
     function defaultColorLight() {
         console.log('Setting default color');
         user.setLightState(3, { on: true, xy: [ 0.1684, 0.0416] }); /*BLUE LIGHT*/
+        user.setLightState(1, { on: true, xy: [ 0.1684, 0.0416] }); /*WHITE LIGHT - For the weather indication light*/
     }
 
     function activate(hue) {
@@ -240,6 +277,69 @@ function MainController($scope, $mdToast, $state, $timeout) {
 
         return hue;
     }
+
+    function checkWeather() {
+
+
+        $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + cityname + '&type=accurate' + "&APPID=" + weatherAPIkey, answerHandler)
+            .fail(onfail);
+        function answerHandler(answer){
+            vm.weathercond = null;
+            //console.log( (answer['main']['temp']-273.15).toFixed(2));
+            $.each(answer, function(key, val){
+                if (key == 'weather'){
+                    vm.weathercond=val[0]['id'];
+                }
+            });
+            if (vm.weathercond != null) {
+                defineWeatherLight(vm.weathercond);
+            }
+            else {
+                console.log("Can't get weather condition code")
+            }
+
+        }
+        function onfail(answer){
+            console.log('Can not get data from weather service, detailed response: ', answer)
+        }
+    }
+
+    function defineWeatherLight(condition) {
+        var condcode = parseInt(condition);
+        var color = null;
+        if (condcode > 199 && condcode < 300) {
+            color = 'darkblue'; // thunderstorm + rain and so...
+        }
+        else if (condcode >= 300 && condcode < 600) {
+            color = 'blue'; // drizzle, rain, heavy rain and so...
+        }
+        else if (condcode >=600 && condcode < 700) {
+            color = 'lightblue'; // snow, heavy snow, sleet and so...
+        }
+        else if (condcode >=700 && condcode < 800) {
+            color = 'white'; // mist, fog and so...
+        }
+        else if (condcode == 800) {
+            color = 'yellow'; // clear sky...
+        }
+        else if (condcode >800 && condcode < 805) {
+            color = 'white'; // clouds
+        }
+        else if (condcode >=900 && condcode < 907) {
+            color = 'red'; // Extreme weather
+        }
+        else {
+            color = 'white'; // Undefined look at http://openweathermap.org/weather-conditions
+        }
+
+        setWeatherColor(color);
+
+        /*$mdToast.show({
+            template: '<md-toast><span flex>' + color + '</span></md-toast>'
+        });*/
+
+    }
+
 
 
 }
