@@ -15,14 +15,14 @@ function MainController($scope, $mdToast, $state, $timeout) {
 
     /*VARIABLES*/
     vm.toggle = true;
-    vm.cityname = 'Oslo';
+    vm.cityname = '';
     vm.checkWeather = checkWeather;
     /*Google calendar*/
     vm.busy = false;
     var hue = jsHue();
     var user = null;
     var weatherAPIkey = 'bb40fccaf1b9a523505913790c4077d6';
-    var cityname = "Oslo";
+    /*var cityname = "Oslo";*/
 
     vm.weathercond = null;
 
@@ -122,7 +122,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
     }
 
 
-    window.setInterval(function () {
+    /*window.setInterval(function () {
         /// call your function here
         console.log('Calling every 5 seg');
         if (vm.token) {
@@ -131,13 +131,13 @@ function MainController($scope, $mdToast, $state, $timeout) {
         else {
             console.log('Waiting for token');
         }
-    }, 3000);
+    }, 3000);*/
 
     window.setInterval(function(){
         /// call your function here
         console.log('Weather check every 20 sec');
-        checkWeather();
-    }, 3000);
+        checkWeather(vm.cityname);
+    }, 5000);
 
     ///////////////////////////////////////// HUE /////////////////////////////////////////
 
@@ -145,7 +145,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
     /////FUNCTIONS
 
     function createUser() {
-        user = hue.bridge('192.168.1.160').user('testingnithapplicanithhome');
+        user = hue.bridge('192.168.1.161').user('testingnithapplicanithhome');
         /*console.log('user ', user);*/ /*UNCOMMENT*/
         // create user account (requires link button to be pressed)
         user.create('testingnithapplicanithhome12', successUser, errorUser);
@@ -250,12 +250,11 @@ function MainController($scope, $mdToast, $state, $timeout) {
     function defaultColorLight() {
         console.log('Setting default color');
         user.setLightState(3, { on: true, xy: [ 0.1684, 0.0416] }); /*BLUE LIGHT*/
-        user.setLightState(1, { on: true, xy: [ 0.1684, 0.0416] }); /*WHITE LIGHT - For the weather indication light*/
+        /*user.setLightState(1, { on: true, xy: [ 0.1684, 0.0416] }); *//*WHITE LIGHT - For the weather indication light*/
     }
 
     function activate(hue) {
         console.log('Start working with HUE ');
-
         hue.discover(
             function(bridges) {
                 if(bridges.length === 0) {
@@ -267,6 +266,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
                         console.log('Bridge found at IP address %s.', b.internalipaddress);
                         createUser();
                         defaultColorLight();
+                        checkWeather('Oslo');
                     });
                 }
             },
@@ -295,10 +295,10 @@ function MainController($scope, $mdToast, $state, $timeout) {
                 console.log('WEATHERCOND ', vm.weathercond)
                 defineWeatherLight(vm.weathercond);
             }
-            else {
+            /*else {
                 console.log("Can't get weather condition code")
                 console.log('ANSWER ELSE', answer);
-            }
+            }*/
 
         }
         function onfail(answer){
