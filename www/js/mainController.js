@@ -8,9 +8,51 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
 
 
     /*LOGIN */
-
-
-
+    /*Weather object:*/
+    /*$scope.data = {
+        "coord":{
+        "lon":10.75,
+            "lat":59.91
+    },
+        "sys":{
+        "type":1,
+            "id":5293,
+            "message":0.0114,
+            "country":"NO",
+            "sunrise":1427173527,
+            "sunset":1427218861
+    },
+        "weather":[
+        {
+            "id":800,
+            "main":"Clear",
+            "description":"Sky is Clear",
+            "icon":"01d"
+        }
+    ],
+        "base":"stations",
+        "main":{
+        "temp":283.09,
+            "pressure":1006,
+            "humidity":36,
+            "temp_min":281.15,
+            "temp_max":284.26
+    },
+        "visibility":10000,
+        "wind":{
+        "speed":2.6,
+            "deg":350,
+            "var_beg":320,
+            "var_end":20
+    },
+        "clouds":{
+        "all":0
+    },
+        "dt":1427208152,
+        "id":3143244,
+        "name":"Oslo",
+        "cod":200
+    }*/
 
     /* jshint validthis: true */
     var vm = this;
@@ -22,7 +64,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
 
     /*VARIABLES*/
     vm.toggle = true;
-    vm.cityname = '';
+    vm.cityname = 'Oslo';
     vm.checkWeather = checkWeather;
     /*Google calendar*/
     vm.busy = false;
@@ -130,7 +172,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     }
 
 
-    window.setInterval(function () {
+    /*window.setInterval(function () {
         /// call your function here
         console.log('Calling every 5 seg');
         if (vm.token) {
@@ -139,7 +181,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
         else {
             console.log('Waiting for token');
         }
-    }, 3000);
+    }, 3000);*/
 
     /*window.setInterval(function(){
         /// call your function here
@@ -154,7 +196,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     /////FUNCTIONS
 
     function createUser() {
-        user = hue.bridge('192.168.1.160').user('testingnithapplicanithhome');
+        user = hue.bridge('192.168.1.161').user('testingnithapplicanithhome');
         /*console.log('user ', user);*/ /*UNCOMMENT*/
         // create user account (requires link button to be pressed)
         user.create('testingnithapplicanithhome12', successUser, errorUser);
@@ -293,17 +335,20 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
         var path = "http://api.openweathermap.org/data/2.5/weather?q=" + cityname + "&type=accurate" + "&APPID=" + weatherAPIkey;
 
         $http.get(path).success(function(data) {
-            alert(JSON.stringify(data));
+            console.log('data ', data);
+            /*alert(JSON.stringify(data));*/
             $scope.data = data;
+            $scope.dataWeatherDescription = data.weather[0].description;
+            $scope.temp = (data.main.temp - 273.15).toFixed(0);
+            $scope.name = data.name;
             vm.weathercond = null;
-            //console.log( (answer['main']['temp']-273.15).toFixed(2));
             $.each(data, function(key, val){
                 if (key == 'weather'){
                     vm.weathercond=val[0]['id'];
                 }
             });
             if (vm.weathercond != null) {
-                console.log('WEATHERCOND ', vm.weathercond)
+                console.log('WEATHERCOND ', vm.weathercond);
                 defineWeatherLight(vm.weathercond);
             }
             /*else {
@@ -313,34 +358,6 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
         }).error(function (data) {
             //
         });
-
-
-       /* $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + cityname + '&type=accurate' + "&APPID=" + weatherAPIkey, answerHandler)
-            .fail(onfail);
-        function answerHandler(answer){
-            console.log('ANSWER ', answer);
-            var answer = answer;
-            vm.weathercond = null;
-            //console.log( (answer['main']['temp']-273.15).toFixed(2));
-            $.each(answer, function(key, val){
-                if (key == 'weather'){
-                    vm.weathercond=val[0]['id'];
-                }
-            });
-            if (vm.weathercond != null) {
-                console.log('WEATHERCOND ', vm.weathercond)
-                defineWeatherLight(vm.weathercond);
-            }
-            *//*else {
-                console.log("Can't get weather condition code")
-                console.log('ANSWER ELSE', answer);
-            }*//*
-            return answer;
-
-        }
-        function onfail(answer){
-            console.log('Can not get data from weather service, detailed response: ', answer)
-        }*/
     }
 
     function defineWeatherLight(condition) {

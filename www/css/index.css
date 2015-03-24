@@ -42,3 +42,10 @@ h1.headerH1 {
     font-size: 24px;
 }
 
+.mainButton {
+    width: 91px;
+    height: 36px;
+    color: #ffffff;
+    margin: 12px 0px;
+}
+

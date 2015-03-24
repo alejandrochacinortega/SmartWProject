@@ -1,14 +1,47 @@
 
-<md-button class="md-raised md-primary" ng-click="vm.getLuces()">Get lights</md-button>
-<md-button class="md-raised md-primary" ng-click="vm.setLight()">Set Lights</md-button>
-<md-button class="md-raised md-primary" ng-click="vm.createUser()">Create user</md-button>
-<md-button class="md-raised md-primary" ng-click="vm.getConfig()">Get config</md-button>
+<!--<md-button class="md-raised md-primary" ng-click="vm.getLuces()">Get lights</md-button>
+<md-button class="md-raised md-primary" ng-click="vm.setLight()">Set Lights</md-button>-->
+<!--<md-button class="md-raised md-primary" ng-click="vm.createUser()">Create user</md-button>-->
+<!--<md-button class="md-raised md-primary" ng-click="vm.getConfig()">Get config</md-button>
 <md-button class="md-raised md-primary" ng-click="vm.toggleLight()">Toggle light</md-button>
-<md-button class="md-raised md-primary" ng-click="vm.switchColor()">Switch Color</md-button>
+<md-button class="md-raised md-primary" ng-click="vm.switchColor()">Switch Color</md-button>-->
 
-<md-button class="md-raised md-primary" ng-click="vm.test()">Test</md-button>
+<!--<md-button class="md-raised md-primary" ng-click="vm.test()">Test</md-button>-->
+<div id="OrgHeaderLogin" class="ion-nav-bar mainHeader" style="background-color: #151515">
+    <p class="headerText">Smart</p>
 
-<input type="text" ng-model="vm.cityname"/>
-<h2>{{vm.cityname}}</h2>
-<md-button class="md-raised md-primary" ng-click="vm.checkWeather(vm.cityname)">Set weather city</md-button>
-<h3>data: {{data}}</h3>
+    <h1 class="headerH1">WORKPLACE</h1>
+    <img ng-src="img/image.jpg" class="headerMainImage"/>
+    <!--<img id="orgLogoImage" src="" class="headerLogo"/> &lt;!&ndash;style="float: right; margin:16px; max-width: 135px; max-height: 80px;" alt=""&ndash;&gt;-->
+</div>
+
+
+<md-content class="md-padding">
+    <!--<div class="md-tile-left" style="padding-bottom:16px">
+        <md-icon ng-style="vm.setColorOn(['color'])" md-font-icon="mdi mdi-account-location" class="iconSize"></md-icon>
+    </div>-->
+    <div layout layout-sm="column">
+        <md-input-container>
+            <label for="weather">City</label>
+            <input ng-model="vm.cityname" id="weather"/>
+        </md-input-container>
+
+        <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">
+                <span>{{name}}</span>
+            </h1>
+        </md-toolbar>
+        <md-item-content>
+            <div class="md-tile-content">
+                <h1>{{temp}} &deg</h1>
+                <h2>{{dataWeatherDescription}}</h2>
+            </div>
+        </md-item-content>
+        <md-divider></md-divider>
+
+        <md-button class="md-raised md-primary mainButton" ng-click="vm.checkWeather(vm.cityname)">SEARCH</md-button>
+    </div>
+   <!-- <div class="md-tile-content" style="padding-top: 0px; padding-right: 0px; padding-left: 0px;">
+
+    </div>-->
+</md-content>
