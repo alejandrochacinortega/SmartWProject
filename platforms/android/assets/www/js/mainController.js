@@ -1,10 +1,17 @@
 angular
     .module('App')
-    .controller('MainController', ['$scope', '$mdToast', '$state', '$timeout', MainController]);
+    .controller('MainController', ['$scope', '$mdToast', '$state', '$timeout', '$http', MainController]);
 
 
 /* @ngInject */
-function MainController($scope, $mdToast, $state, $timeout) {
+function MainController($scope, $mdToast, $state, $timeout, $http) {
+
+
+    /*LOGIN */
+
+
+
+
     /* jshint validthis: true */
     var vm = this;
     vm.activate = activate;
@@ -22,6 +29,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
     var hue = jsHue();
     var user = null;
     var weatherAPIkey = 'bb40fccaf1b9a523505913790c4077d6';
+
     /*var cityname = "Oslo";*/
 
     vm.weathercond = null;
@@ -118,11 +126,11 @@ function MainController($scope, $mdToast, $state, $timeout) {
     vm.test = test;
 
     function test() {
-        console.log('Global value of token: ', vm.token);
+        console.log('Weather object ');
     }
 
 
-    /*window.setInterval(function () {
+    window.setInterval(function () {
         /// call your function here
         console.log('Calling every 5 seg');
         if (vm.token) {
@@ -131,13 +139,14 @@ function MainController($scope, $mdToast, $state, $timeout) {
         else {
             console.log('Waiting for token');
         }
-    }, 3000);*/
+    }, 3000);
 
-    window.setInterval(function(){
+    /*window.setInterval(function(){
         /// call your function here
         console.log('Weather check every 20 sec');
+
         checkWeather(vm.cityname);
-    }, 5000);
+    }, 5000);*/
 
     ///////////////////////////////////////// HUE /////////////////////////////////////////
 
@@ -145,7 +154,7 @@ function MainController($scope, $mdToast, $state, $timeout) {
     /////FUNCTIONS
 
     function createUser() {
-        user = hue.bridge('192.168.1.161').user('testingnithapplicanithhome');
+        user = hue.bridge('192.168.1.160').user('testingnithapplicanithhome');
         /*console.log('user ', user);*/ /*UNCOMMENT*/
         // create user account (requires link button to be pressed)
         user.create('testingnithapplicanithhome12', successUser, errorUser);
@@ -280,10 +289,37 @@ function MainController($scope, $mdToast, $state, $timeout) {
 
     function checkWeather(cityname) {
         console.log('Checking weather of ', cityname);
-        $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + cityname + '&type=accurate' + "&APPID=" + weatherAPIkey, answerHandler)
+
+        var path = "http://api.openweathermap.org/data/2.5/weather?q=" + cityname + "&type=accurate" + "&APPID=" + weatherAPIkey;
+
+        $http.get(path).success(function(data) {
+            alert(JSON.stringify(data));
+            $scope.data = data;
+            vm.weathercond = null;
+            //console.log( (answer['main']['temp']-273.15).toFixed(2));
+            $.each(data, function(key, val){
+                if (key == 'weather'){
+                    vm.weathercond=val[0]['id'];
+                }
+            });
+            if (vm.weathercond != null) {
+                console.log('WEATHERCOND ', vm.weathercond)
+                defineWeatherLight(vm.weathercond);
+            }
+            /*else {
+             console.log("Can't get weather condition code")
+             console.log('ANSWER ELSE', answer);
+             }*/
+        }).error(function (data) {
+            //
+        });
+
+
+       /* $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + cityname + '&type=accurate' + "&APPID=" + weatherAPIkey, answerHandler)
             .fail(onfail);
         function answerHandler(answer){
             console.log('ANSWER ', answer);
+            var answer = answer;
             vm.weathercond = null;
             //console.log( (answer['main']['temp']-273.15).toFixed(2));
             $.each(answer, function(key, val){
@@ -295,15 +331,16 @@ function MainController($scope, $mdToast, $state, $timeout) {
                 console.log('WEATHERCOND ', vm.weathercond)
                 defineWeatherLight(vm.weathercond);
             }
-            /*else {
+            *//*else {
                 console.log("Can't get weather condition code")
                 console.log('ANSWER ELSE', answer);
-            }*/
+            }*//*
+            return answer;
 
         }
         function onfail(answer){
             console.log('Can not get data from weather service, detailed response: ', answer)
-        }
+        }*/
     }
 
     function defineWeatherLight(condition) {
