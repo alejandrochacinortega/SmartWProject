@@ -1,58 +1,10 @@
 angular
     .module('App')
-    .controller('MainController', ['$scope', '$mdToast', '$state', '$timeout', '$http', MainController]);
+    .controller('MainController', ['$scope', '$mdToast', '$state', '$timeout', '$http', '$interval', MainController]);
 
 
 /* @ngInject */
-function MainController($scope, $mdToast, $state, $timeout, $http) {
-
-
-    /*LOGIN */
-    /*Weather object:*/
-    /*$scope.data = {
-        "coord":{
-        "lon":10.75,
-            "lat":59.91
-    },
-        "sys":{
-        "type":1,
-            "id":5293,
-            "message":0.0114,
-            "country":"NO",
-            "sunrise":1427173527,
-            "sunset":1427218861
-    },
-        "weather":[
-        {
-            "id":800,
-            "main":"Clear",
-            "description":"Sky is Clear",
-            "icon":"01d"
-        }
-    ],
-        "base":"stations",
-        "main":{
-        "temp":283.09,
-            "pressure":1006,
-            "humidity":36,
-            "temp_min":281.15,
-            "temp_max":284.26
-    },
-        "visibility":10000,
-        "wind":{
-        "speed":2.6,
-            "deg":350,
-            "var_beg":320,
-            "var_end":20
-    },
-        "clouds":{
-        "all":0
-    },
-        "dt":1427208152,
-        "id":3143244,
-        "name":"Oslo",
-        "cod":200
-    }*/
+function MainController($scope, $mdToast, $state, $timeout, $http, $interval) {
 
     /* jshint validthis: true */
     var vm = this;
@@ -64,6 +16,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
 
     /*VARIABLES*/
     vm.toggle = true;
+    $scope.switch = 'Available';
     vm.cityname = 'Oslo';
     vm.checkWeather = checkWeather;
     /*Google calendar*/
@@ -71,6 +24,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     var hue = jsHue();
     var user = null;
     var weatherAPIkey = 'bb40fccaf1b9a523505913790c4077d6';
+    vm.busyManual = busyManual;
 
     /*var cityname = "Oslo";*/
 
@@ -172,7 +126,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     }
 
 
-    /*window.setInterval(function () {
+    /*var intervalCalendarID = setInterval(function () {
         /// call your function here
         console.log('Calling every 5 seg');
         if (vm.token) {
@@ -183,12 +137,66 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
         }
     }, 3000);*/
 
+    /*intervalCalendarID()*/;
+
     /*window.setInterval(function(){
         /// call your function here
         console.log('Weather check every 20 sec');
 
         checkWeather(vm.cityname);
     }, 5000);*/
+
+    var calendarCount;
+    $scope.fight = function() {
+        // Don't start a new fight if we are already fighting
+        /*if ( angular.isDefined(stop) ) return;*/
+        if (vm.syncManually) return;
+
+        calendarCount = $interval(function() {
+            if (vm.token) {
+                checkToken(vm.token);
+            }
+            else {
+                console.log('Waiting for token');
+            }
+        }, 300);
+    };
+
+    $scope.stopFight = function() {
+
+    };
+
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        /*$scope.stopFight();*/
+        busyManual("Available")
+    });
+
+
+
+
+    function busyManual(value) {
+        console.log('switch ', value);
+        if (value == "Available") {
+            vm.syncManually = true;
+            if (angular.isDefined(calendarCount)) {
+                console.log('Stop fight');
+                $interval.cancel(calendarCount);
+                calendarCount = undefined;
+            }
+        }
+        else {
+            vm.syncManually = false;
+        }
+        vm.busy = !vm.busy;
+        console.log('Switching colors');
+        if (vm.busy) {
+            user.setLightState(3, { on: vm.toggle, xy: [ 0.6736, 0.3221] }); /*RED LIGHT*/
+        }
+        else {
+            user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*GREEN LIGHT*/
+        }
+    }
 
     ///////////////////////////////////////// HUE /////////////////////////////////////////
 
@@ -358,34 +366,6 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
         }).error(function (data) {
             //
         });
-
-
-       /* $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + cityname + '&type=accurate' + "&APPID=" + weatherAPIkey, answerHandler)
-            .fail(onfail);
-        function answerHandler(answer){
-            console.log('ANSWER ', answer);
-            var answer = answer;
-            vm.weathercond = null;
-            //console.log( (answer['main']['temp']-273.15).toFixed(2));
-            $.each(answer, function(key, val){
-                if (key == 'weather'){
-                    vm.weathercond=val[0]['id'];
-                }
-            });
-            if (vm.weathercond != null) {
-                console.log('WEATHERCOND ', vm.weathercond)
-                defineWeatherLight(vm.weathercond);
-            }
-            *//*else {
-                console.log("Can't get weather condition code")
-                console.log('ANSWER ELSE', answer);
-            }*//*
-            return answer;
-
-        }
-        function onfail(answer){
-            console.log('Can not get data from weather service, detailed response: ', answer)
-        }*/
     }
 
     function defineWeatherLight(condition) {

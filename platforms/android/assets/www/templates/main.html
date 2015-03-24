@@ -1,10 +1,13 @@
 
 <!--<md-button class="md-raised md-primary" ng-click="vm.getLuces()">Get lights</md-button>
 <md-button class="md-raised md-primary" ng-click="vm.setLight()">Set Lights</md-button>-->
-<!--<md-button class="md-raised md-primary" ng-click="vm.createUser()">Create user</md-button>-->
+<md-button class="md-raised md-primary" ng-click="vm.createUser()">Create user</md-button>
 <!--<md-button class="md-raised md-primary" ng-click="vm.getConfig()">Get config</md-button>
 <md-button class="md-raised md-primary" ng-click="vm.toggleLight()">Toggle light</md-button>
 <md-button class="md-raised md-primary" ng-click="vm.switchColor()">Switch Color</md-button>-->
+<md-button class="md-raised md-primary" ng-click="vm.busyManual()">Busy</md-button>
+
+
 
 <!--<md-button class="md-raised md-primary" ng-click="vm.test()">Test</md-button>-->
 <div id="OrgHeaderLogin" class="ion-nav-bar mainHeader" style="background-color: #151515">
@@ -17,6 +20,20 @@
 
 
 <md-content class="md-padding">
+    Sync manually?
+    <md-switch ng-model="switch" aria-label="Switch 2" ng-true-value="'Busy'" ng-false-value="'Available'" class="md-warn" ng-click="vm.busyManual(switch)">
+        {{ switch }}
+    </md-switch>
+
+
+    <button type="button" data-ng-click="fight()">Fight</button>
+    <button type="button" data-ng-click="stopFight()">StopFight</button>
+    <button type="button" data-ng-click="resetFight()">resetFight</button>
+    <!--<md-switch ng-model="vm.busy" aria-label="Switch 2" ng-true-value="'Busy'" ng-false-value="'Free'" class="md-warn" ng-click="vm.busyManual()">
+        {{ vm.busy }}
+        &lt;!&ndash;<h4 ng-show="vm.busy">Busy</h4>
+        <h4 ng-show="!vm.busy">Free</h4>&ndash;&gt;
+    </md-switch>-->
     <!--<div class="md-tile-left" style="padding-bottom:16px">
         <md-icon ng-style="vm.setColorOn(['color'])" md-font-icon="mdi mdi-account-location" class="iconSize"></md-icon>
     </div>-->
