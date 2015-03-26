@@ -1,58 +1,10 @@
 angular
     .module('App')
-    .controller('MainController', ['$scope', '$mdToast', '$state', '$timeout', '$http', MainController]);
+    .controller('MainController', ['$scope', '$rootScope', '$mdToast', '$state', '$timeout', '$http', MainController]);
 
 
 /* @ngInject */
-function MainController($scope, $mdToast, $state, $timeout, $http) {
-
-
-    /*LOGIN */
-    /*Weather object:*/
-    /*$scope.data = {
-        "coord":{
-        "lon":10.75,
-            "lat":59.91
-    },
-        "sys":{
-        "type":1,
-            "id":5293,
-            "message":0.0114,
-            "country":"NO",
-            "sunrise":1427173527,
-            "sunset":1427218861
-    },
-        "weather":[
-        {
-            "id":800,
-            "main":"Clear",
-            "description":"Sky is Clear",
-            "icon":"01d"
-        }
-    ],
-        "base":"stations",
-        "main":{
-        "temp":283.09,
-            "pressure":1006,
-            "humidity":36,
-            "temp_min":281.15,
-            "temp_max":284.26
-    },
-        "visibility":10000,
-        "wind":{
-        "speed":2.6,
-            "deg":350,
-            "var_beg":320,
-            "var_end":20
-    },
-        "clouds":{
-        "all":0
-    },
-        "dt":1427208152,
-        "id":3143244,
-        "name":"Oslo",
-        "cod":200
-    }*/
+function MainController($scope, $rootScope, $mdToast, $state, $timeout, $http) {
 
     /* jshint validthis: true */
     var vm = this;
@@ -62,8 +14,10 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     vm.number_of_current_events = 0;
 
 
+
     /*VARIABLES*/
     vm.toggle = true;
+    $scope.calendarSync = true;
     vm.cityname = 'Oslo';
     vm.checkWeather = checkWeather;
     /*Google calendar*/
@@ -71,6 +25,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     var hue = jsHue();
     var user = null;
     var weatherAPIkey = 'bb40fccaf1b9a523505913790c4077d6';
+    vm.message = '';
 
     /*var cityname = "Oslo";*/
 
@@ -155,10 +110,18 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
             if (+today >= +eventStartDate.valueOf() && +today <= +eventEndDate.valueOf()) {
                 vm.number_of_current_events += 1;
                 busyUser();
+                $rootScope.$apply(function() {
+                    $rootScope.message = "Busy";
+                    $rootScope.busy = true;
+                });
             }
         }
         if (vm.number_of_current_events == 0) {
             freeUser();
+            $rootScope.$apply(function() {
+                $rootScope.message = "Available";
+                $rootScope.busy = false;
+            });
         }
 
         return vm.number_of_current_events;
@@ -172,7 +135,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     }
 
 
-    /*window.setInterval(function () {
+    window.setInterval(function () {
         /// call your function here
         console.log('Calling every 5 seg');
         if (vm.token) {
@@ -181,7 +144,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
         else {
             console.log('Waiting for token');
         }
-    }, 3000);*/
+    }, 3000);
 
     /*window.setInterval(function(){
         /// call your function here
@@ -196,7 +159,7 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
     /////FUNCTIONS
 
     function createUser() {
-        user = hue.bridge('192.168.1.161').user('testingnithapplicanithhome');
+        user = hue.bridge('192.168.1.160').user('testingnithapplicanithhome');
         /*console.log('user ', user);*/ /*UNCOMMENT*/
         // create user account (requires link button to be pressed)
         user.create('testingnithapplicanithhome12', successUser, errorUser);
@@ -262,10 +225,12 @@ function MainController($scope, $mdToast, $state, $timeout, $http) {
 
     function freeUser() {
         user.setLightState(3, { on: vm.toggle, xy: [ 0.4084, 0.5168 ] }); /*GREEN LIGHT*/
+        $scope.message = "Available";
     }
 
     function busyUser() {
         user.setLightState(3, { on: vm.toggle, xy: [ 0.6736, 0.3221] }); /*RED LIGHT*/
+        $scope.message = "Busy";
     }
 
     function setWeatherColor(color) {

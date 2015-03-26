@@ -49,3 +49,13 @@ h1.headerH1 {
     margin: 12px 0px;
 }
 
+.redColor {
+    color: red;
+    margin-left: 3px;
+}
+
+.greenColor {
+    color: green;
+    margin-left: 3px;
+}
+

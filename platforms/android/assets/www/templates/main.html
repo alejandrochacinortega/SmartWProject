@@ -17,9 +17,12 @@
 
 
 <md-content class="md-padding">
-    <!--<div class="md-tile-left" style="padding-bottom:16px">
-        <md-icon ng-style="vm.setColorOn(['color'])" md-font-icon="mdi mdi-account-location" class="iconSize"></md-icon>
-    </div>-->
+    <md-switch ng-disabled="true" aria-label="Disabled active switch" ng-model="calendarSync" class="md-primary" style="margin-left: 3px;">
+        Sync with Google Calendar
+    </md-switch>
+    <span ng-class="busy ? 'redColor' : 'greenColor'">You are currently: {{message}}</span>
+    <!--<md-divider></md-divider>-->
+    
     <div layout layout-sm="column">
         <md-input-container>
             <label for="weather">City</label>
@@ -33,8 +36,7 @@
         </md-toolbar>
         <md-item-content>
             <div class="md-tile-content">
-                <h1>{{temp}} &deg</h1>
-                <h2>{{dataWeatherDescription}}</h2>
+                <h1>{{temp}} &deg - {{dataWeatherDescription}}</h1>
             </div>
         </md-item-content>
         <md-divider></md-divider>
